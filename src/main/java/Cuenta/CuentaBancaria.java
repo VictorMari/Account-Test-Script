@@ -41,8 +41,8 @@ public class CuentaBancaria {
             if(!comprobarCCC(entidad+oficina+DC+numCuenta))
                 throw new IllegalArgumentException("El codigo de cuenta del cliente es inválido");
             //Compruebo si los datos de control (DC)son validos
-            if(!DC.equals(obtenerDigitosControl(entidad,oficina,numCuenta)))
-                throw new IllegalArgumentException("Los digitos de control no son validos");
+            //if(!DC.equals(obtenerDigitosControl(entidad,oficina,numCuenta)))
+                //throw new IllegalArgumentException("Los digitos de control no son validos");
             this.titular=titular;
             this.entidad=entidad;
             this.numCuenta=numCuenta;
@@ -53,7 +53,7 @@ public class CuentaBancaria {
     }
     //Pondremos un constructor al cual solo se introducirá el titular y codigo de cuenta.
     public CuentaBancaria(String titular,String CCC) throws Exception{
-        this (titular,CCC.substring(0, 4),CCC.substring(4, 5),CCC.substring(8, 10),CCC.substring(10, 20));
+        this (titular,CCC.substring(0, 4),CCC.substring(4, 8),CCC.substring(8, 10),CCC.substring(10, 20));
         
     }
     //Meteremos un metodo set para introducir la cadena recibida del titular
@@ -163,10 +163,21 @@ public class CuentaBancaria {
         //Aqui incio dos variables que me haran falta
         int digCont1=0;
         int digCont2=0;
+        /*
         for(int x=0;x<num_serie.length;x++){
             digCont1+=num_serie[x]*(entidadOfi.charAt(x)-48);
             digCont2+=num_serie[x]*(numC.charAt(x)-48);
         }
+        */
+
+        for(int x=0;x<entidadOfi.length();x++){
+            digCont1+=num_serie[x]*(entidadOfi.charAt(x)-48);
+        }
+
+        for(int x=0;x<numC.length();x++){
+            digCont2+=num_serie[x]*(numC.charAt(x)-48);
+        }
+
         //le restamos a 11 el resto de la division 
         digCont1=11-(digCont1%11);
         digCont2=11-(digCont2%11);
