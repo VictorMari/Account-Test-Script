@@ -155,39 +155,47 @@ public class CuentaBancaria {
      */
     
     public static String obtenerDigitosControl(String entidad,String oficina,String numCuenta){
-        String DC="";
-        int[] num_serie={1,2,4,8,5,10,9,7,3,6}; 
-        //añadimos dos ceros para poder hacer los calculos
-        String entidadOfi="0"+entidad+oficina;
-        String numC=numCuenta;
-        //Aqui incio dos variables que me haran falta
-        int digCont1=0;
-        int digCont2=0;
-        /*
-        for(int x=0;x<num_serie.length;x++){
-            digCont1+=num_serie[x]*(entidadOfi.charAt(x)-48);
-            digCont2+=num_serie[x]*(numC.charAt(x)-48);
-        }
-        */
-
-        for(int x=0;x<entidadOfi.length();x++){
-            digCont1+=num_serie[x]*(entidadOfi.charAt(x)-48);
-        }
-
-        for(int x=0;x<numC.length();x++){
-            digCont2+=num_serie[x]*(numC.charAt(x)-48);
-        }
-
-        //le restamos a 11 el resto de la division 
-        digCont1=11-(digCont1%11);
-        digCont2=11-(digCont2%11);
+        String cuenta = numCuenta;
         
-        // Comprobamos si nos ha dado 11(sera 0) o 10 (sera 1)
-        digCont1=digCont1==11?0:digCont1==10?1:digCont1;
-        digCont2=digCont2==11?0:digCont2==10?1:digCont2;
-        //ahora toca unir los valores en el DC
-        DC=String.valueOf(digCont1)+String.valueOf(digCont2);
-        return DC;
+        String control1 = "00" + cuenta.substring(0, 8); //Añadimos dos 0 al comienzo del array
+        String control2 = cuenta.substring(10, 20);
+        int d1 = 0;
+        int d2 = 0;
+
+        int x; //Lo usaremos para los bucles for
+
+        int[] coeficientes = {1, 2, 4, 8, 5, 10, 9, 7, 3, 6}; //Array con los valores de los coeficientes
+
+        //Realimaos la multiplicación de control1 por los coeficientes para obetener d1
+        //Para ello vamos recorriendo el String de los coeficientes y cada valor de estos lo multiplicamos por un dígito del 
+        //número de cuenta que tenemos que pasar de String a Int.
+        for (x = 0; x < coeficientes.length; x++) {
+            d1 = d1 + coeficientes[x] * Integer.parseInt(control1.substring(x, x + 1)); //Tb podríamos poner d1 += coef...
+        }
+        for (x = 0; x < coeficientes.length; x++) {
+            d2 = d2 + coeficientes[x] * Integer.parseInt(control2.substring(x, x + 1)); //Vamos sumando los valores de la multiplicación
+        }
+
+        // Restamos a 11 el resto de la división entre el valor obtenido y el número 11
+        d1 = 11 - (d1 % 11);
+        d2 = 11 - (d2 % 11);
+
+        //Mediante los métodos if damos el valor 0 y 1 al resto 10 y 11 respectivamente
+        if (d1 == 10) {
+            d1 = 1;
+        }
+        if (d1 == 11) {
+            d1 = 0;
+        }
+        if (d2 == 10) {
+            d2 = 1;
+        }
+        if (d2 == 11) {
+            d2 = 0;
+        }
+//Por último necesitamos pasar los int a String
+        String digitosControlCalculados = String.valueOf(d1) + String.valueOf(d2);
+        return digitosControlCalculados;
     }
     /**
      * Ahora hare un metodo para sobreescribir la funcion toString para contener
